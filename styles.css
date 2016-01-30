@@ -3,7 +3,16 @@
     border-radius: 1px;
     height:  30px;
     width: 30px;
+    background-color: #eee;
 }
 .board {
     line-height: 0;
+}
+.mine {
+    background-color: #aa0000;
+    border-radius: 4px;
+}
+.safe {
+    border-color: #fff;
+    background-color: #fff;
 }
