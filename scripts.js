@@ -40,7 +40,7 @@ var Board = function(rows, columns, mines) {
     }
 }
 
-board = new Board(10, 10, 10);
+board = new Board(10, 10, 20);
 
 var Field = function(row, column, mine) {
    this.row = row;
@@ -60,33 +60,87 @@ var Field = function(row, column, mine) {
    this.mark = function() {
        this.marked = true;
    }
+   this.top_left = function() {
+       if(row == 0 || column == 0) {
+           return false;
+        }
+        return board.get_field(row -1 + " " + (column - 1));
+    }
 
    this.on_top = function() {
        if(row == 0) {
-            return;
+            return false;
        }
        return board.get_field(row - 1 + " " + column);
+   }
+
+   this.top_right = function() {
+       if(row == 0 || column == board.columns - 1) {
+           return false;
+       }
+       return board.get_field(row - 1 + " " + (column + 1));
    }
    
    this.bottom = function() {
         if(row == board.rows - 1) {
-            return;
+            return false;
         }
         return board.get_field(row + 1 + " " + column);
    }   
+
+   this.bottom_left = function() {
+       if(row == board.rows || column == 0) {
+           return false;
+        }
+        return board.get_field(row + 1 + " " + (column - 1));
+   }
    
+   this.bottom_right = function() {
+       if(row == board.rows || column == board.columns) {
+           return false;
+        }
+        return board.get_field(row + 1 + " " + (column + 1));
+    }
    this.left = function() {
        if(column == 0) {
-           return;
+           return false;
        }
        return board.get_field(row + " " + (column - 1));
    }
-   this.right = function() {
+    this.right = function() {
        if(column == board.columns - 1) {
-           return;
+           return false;
        }
-       return board.get_field(row + " " + (column + 1));
-   }
+           return board.get_field(row + " " + (column + 1));
+    }
+    this.mine_count = function() {
+       var count = 0;
+       if(this.on_top() && this.on_top().mine) {
+           count++;
+        }
+        if(this.top_left() && this.top_left().mine) {
+            count++;
+        }
+        if(this.top_right() && this.top_right().mine) {
+            count++;
+        }
+        if(this.bottom() && this.bottom().mine) {
+            count++;
+        }
+        if(this.bottom_left() && this.bottom_left().mine) {
+            count++;
+        }
+        if(this.bottom_right() && this.bottom_right().mine) {
+            count++;
+        }
+        if(this.right() && this.right().mine) {
+            count++;
+        }
+        if(this.left().mine) {
+            count++;
+        }
+        return count;
+    }
 }
 
 $(document).ready(function() {
@@ -94,6 +148,11 @@ $(document).ready(function() {
     $(".btn").on("click", function() {
         var field = board.get_field($(this).attr("id"));
         field.reveal();
-        console.log(field);
+        if(field.mine) {
+            $(this).addClass("mine")
+        } else {
+            $(this).addClass("safe");
+            $(this).text(field.mine_count() == 0? "" : field.mine_count());
+        }
     });
 });
