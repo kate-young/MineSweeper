@@ -1,0 +1,9 @@
+.btn {
+    margin: 0px; 
+    border-radius: 1px;
+    height:  30px;
+    width: 30px;
+}
+.board {
+    line-height: 0;
+}
