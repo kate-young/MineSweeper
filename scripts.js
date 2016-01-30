@@ -9,8 +9,11 @@ var Board = function(rows, columns, mines) {
 
     this.generate_mine_field = function() {
         var rands = new Array();
-        for(var i = 0; i < this.mines; i++) {
-            rands.push(Math.floor(Math.random() * this.mines));
+        while(rands.length < this.mines) {
+            var num = Math.floor(Math.random() * this.rows * this.columns);
+            if(rands.indexOf(num) === -1) {
+                rands.push(num);
+            }
         }
         return rands;
     }
@@ -145,7 +148,15 @@ var Field = function(row, column, mine) {
 
 $(document).ready(function() {
     board.initialize().appendTo("body");
-    $(".btn").on("click", function() {
+    $(".btn").on("mousedown", function(e) {
+        e.preventDefault();
+        if(e.which == 3) {
+            $(this).html("<span class='glyphicon glyphicon-flag'></span>");
+            return;
+        }
+        if($(this).revealed) {
+            return;
+        }
         var field = board.get_field($(this).attr("id"));
         field.reveal();
         if(field.mine) {
