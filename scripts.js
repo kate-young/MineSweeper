@@ -40,6 +40,8 @@ var Board = function(rows, columns, mines) {
     }
 }
 
+board = new Board(10, 10, 10);
+
 var Field = function(row, column, mine) {
    this.row = row;
 
@@ -58,10 +60,36 @@ var Field = function(row, column, mine) {
    this.mark = function() {
        this.marked = true;
    }
+
+   this.on_top = function() {
+       if(row == 0) {
+            return;
+       }
+       return board.get_field(row - 1 + " " + column);
+   }
+   
+   this.bottom = function() {
+        if(row == board.rows - 1) {
+            return;
+        }
+        return board.get_field(row + 1 + " " + column);
+   }   
+   
+   this.left = function() {
+       if(column == 0) {
+           return;
+       }
+       return board.get_field(row + " " + (column - 1));
+   }
+   this.right = function() {
+       if(column == board.columns - 1) {
+           return;
+       }
+       return board.get_field(row + " " + (column + 1));
+   }
 }
 
 $(document).ready(function() {
-    board = new Board(10, 10, 50);
     board.initialize().appendTo("body");
     $(".btn").on("click", function() {
         var field = board.get_field($(this).attr("id"));
