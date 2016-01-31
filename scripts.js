@@ -66,14 +66,26 @@ var Field = function(row, column, mine) {
            $field.text(this.mine_count() == 0? "" : this.mine_count());
        }
        if(!this.mine && this.mine_count() == 0) {
+           if(this.top_right() && !this.top_right().revealed) {
+               this.top_right().reveal();
+           }
            if(this.on_top() && !this.on_top().revealed) {
                this.on_top().reveal();
+           }
+           if(this.top_left() && !this.top_left().revealed) {
+               this.top_left().reveal();
            }
            if(this.bottom() && !this.bottom().revealed) {
                this.bottom().reveal();
            }
+           if(this.bottom_right() && !this.bottom_right().revealed) {
+               this.bottom_right().reveal();
+           }
            if(this.right() && !this.right().revealed) {
                this.right().reveal();
+           }
+           if(this.bottom_left() && !this.bottom_left().revealed) {
+               this.bottom_left().reveal();
            }
            if(this.left() && !this.left().revealed) {
                this.left().reveal();
