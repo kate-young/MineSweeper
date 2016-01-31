@@ -43,7 +43,7 @@ var Board = function(rows, columns, mines) {
     }
 }
 
-board = new Board(10, 10, 20);
+board = new Board(10, 10, 5);
 
 var Field = function(row, column, mine) {
    this.row = row;
@@ -58,6 +58,27 @@ var Field = function(row, column, mine) {
 
    this.reveal = function() {
        this.revealed = true;
+       var $field = $(document.getElementById(row + " "+ column));
+       if(this.mine) {
+           $field.addClass("mine")
+       } else {
+           $field.addClass("safe");
+           $field.text(this.mine_count() == 0? "" : this.mine_count());
+       }
+       if(!this.mine && this.mine_count() == 0) {
+           if(this.on_top() && !this.on_top().revealed) {
+               this.on_top().reveal();
+           }
+           if(this.bottom() && !this.bottom().revealed) {
+               this.bottom().reveal();
+           }
+           if(this.right() && !this.right().revealed) {
+               this.right().reveal();
+           }
+           if(this.left() && !this.left().revealed) {
+               this.left().reveal();
+           }
+       }
    }
 
    this.mark = function() {
@@ -159,11 +180,6 @@ $(document).ready(function() {
         }
         var field = board.get_field($(this).attr("id"));
         field.reveal();
-        if(field.mine) {
-            $(this).addClass("mine")
-        } else {
-            $(this).addClass("safe");
-            $(this).text(field.mine_count() == 0? "" : field.mine_count());
-        }
+        
     });
 });
