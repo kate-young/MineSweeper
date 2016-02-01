@@ -1,3 +1,28 @@
+$(document).ready(function() {
+    var rows = 10;
+    var columns = 10;
+    var mines = 15;
+    board = new Board(rows, columns, mines);
+    board.initialize();
+    $(".btn").on("mousedown", function(e) {
+        e.preventDefault();
+        if(e.which == 3) {
+            $(this).html("<span class='glyphicon glyphicon-flag'></span>");
+            return;
+        }
+        if($(this).revealed) {
+            return;
+        }
+        var field = board.get_field($(this).attr("id"));
+        field.reveal();
+        if(field.mine) {
+            alert("You lost!");
+        }
+        if(board.check_for_win()) {
+            alert("You Won!");
+        }
+    });
+});
 var Board = function(rows, columns, mines) {
     this.rows = rows;
 
@@ -55,7 +80,6 @@ var Board = function(rows, columns, mines) {
     }
 }
 
-board = new Board(10, 10, 5);
 
 var Field = function(row, column, mine) {
    this.row = row;
@@ -191,22 +215,3 @@ var Field = function(row, column, mine) {
     }
 }
 
-$(document).ready(function() {
-    board.initialize().appendTo("body");
-    $(".btn").on("mousedown", function(e) {
-        e.preventDefault();
-        if(e.which == 3) {
-            $(this).html("<span class='glyphicon glyphicon-flag'></span>");
-            return;
-        }
-        if($(this).revealed) {
-            return;
-        }
-        var field = board.get_field($(this).attr("id"));
-        field.reveal();
-        // Check for win
-        if(board.check_for_win()) {
-            alert("You Won!");
-        }
-    });
-});
