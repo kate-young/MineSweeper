@@ -41,6 +41,18 @@ var Board = function(rows, columns, mines) {
     this.get_field = function(coords) {
         return this.fields.get(coords);
     }
+
+    this.check_for_win = function() {
+        for(var r = 0; r< this.rows; r++) {
+            for(var c= 0; c < this.columns; c++) {
+                var field = this.get_field(r + " " + c);
+                if(!field.mine && !field.revealed){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
 
 board = new Board(10, 10, 5);
@@ -192,6 +204,9 @@ $(document).ready(function() {
         }
         var field = board.get_field($(this).attr("id"));
         field.reveal();
-        
+        // Check for win
+        if(board.check_for_win()) {
+            alert("You Won!");
+        }
     });
 });
