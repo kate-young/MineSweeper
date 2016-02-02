@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var rows = 10;
     var columns = 10;
-    var mines = 15;
+    var mines = 25;
     board = new Board(rows, columns, mines);
     board.initialize();
     $(".btn").on("contextmenu", function() {
@@ -9,17 +9,15 @@ $(document).ready(function() {
     });
     $(".btn").on("mousedown", function(e) {
         e.preventDefault();
-        if(board.complete) {
+        var field = board.get_field($(this).attr("id"));
+        if(field.revealed || board.complete.return) {
             return;
         }
-        var field = board.get_field($(this).attr("id"));
         if(e.which == 3) {
             field.flag();
             return;
         }
-        if(field.revealed) {
-            return;
-        }
+        
         field.reveal();
         if(field.mine) {
             alert("You lost!");
