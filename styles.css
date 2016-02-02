@@ -16,3 +16,7 @@
     border-color: #eee;
     background-color: #fff;
 }
+.safe:hover {
+    background-color: #fff;
+    border-color: #eee;
+}

@@ -1,6 +1,6 @@
 $(document).ready(function() {
-    var rows = 10;
-    var columns = 10;
+    var rows = 20;
+    var columns = 20;
     var mines = 25;
     board = new Board(rows, columns, mines);
     board.initialize();
@@ -10,7 +10,7 @@ $(document).ready(function() {
     $(".btn").on("mousedown", function(e) {
         e.preventDefault();
         var field = board.get_field($(this).attr("id"));
-        if(field.revealed || board.complete.return) {
+        if(field.revealed || board.complete) {
             return;
         }
         if(e.which == 3) {
