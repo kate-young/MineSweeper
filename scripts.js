@@ -4,16 +4,22 @@ $(document).ready(function() {
     var mines = 15;
     board = new Board(rows, columns, mines);
     board.initialize();
+    $(".btn").on("contextmenu", function() {
+        return false;
+    });
     $(".btn").on("mousedown", function(e) {
         e.preventDefault();
-        if(e.which == 3) {
-            $(this).html("<span class='glyphicon glyphicon-flag'></span>");
-            return;
-        }
-        if($(this).revealed) {
+        if(board.complete) {
             return;
         }
         var field = board.get_field($(this).attr("id"));
+        if(e.which == 3) {
+            field.flag();
+            return;
+        }
+        if(field.revealed) {
+            return;
+        }
         field.reveal();
         if(field.mine) {
             alert("You lost!");
@@ -24,6 +30,8 @@ $(document).ready(function() {
     });
 });
 var Board = function(rows, columns, mines) {
+    this.complete = false;
+
     this.rows = rows;
 
     this.columns = columns;
@@ -76,7 +84,12 @@ var Board = function(rows, columns, mines) {
                 }
             }
         }
+        this.end();
         return true;
+    }
+
+    this.end = function() {
+        this.complete = true;
     }
 }
 
@@ -90,16 +103,31 @@ var Field = function(row, column, mine) {
 
    this.revealed = false;
 
+   var flagged = false;
+
    this.marked = false;
+
+   this.$dom_field = function() {
+       return $(document.getElementById(this.row + " " + this.column));
+    }
+
+   this.flag = function() {
+       if(flagged) {
+           $(this.$dom_field()).removeClass("glyphicon glyphicon-flag");
+       } else {
+           $(this.$dom_field()).addClass("glyphicon glyphicon-flag");
+       }
+       flagged = true;
+   }
 
    this.reveal = function() {
        this.revealed = true;
-       var $field = $(document.getElementById(row + " "+ column));
        if(this.mine) {
-           $field.addClass("mine")
+           this.$dom_field().addClass("mine");
+           board.end();
        } else {
-           $field.addClass("safe");
-           $field.text(this.mine_count() == 0? "" : this.mine_count());
+           this.$dom_field().addClass("safe");
+           this.$dom_field().text(this.mine_count() == 0? "" : this.mine_count());
        }
        if(!this.mine && this.mine_count() == 0) {
            if(this.top_right() && !this.top_right().revealed) {
