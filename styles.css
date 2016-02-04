@@ -16,7 +16,7 @@
     border-color: #eee;
     background-color: #fff;
 }
-.safe:hover {
+.safe:hover, .safe:active, .safe:focus{
     background-color: #fff;
     border-color: #eee;
 }

@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var rows = 20;
     var columns = 20;
-    var mines = 25;
+    var mines = 50;
     board = new Board(rows, columns, mines);
     board.initialize();
     $(".btn").on("contextmenu", function() {
@@ -105,6 +105,8 @@ var Field = function(row, column, mine) {
 
    this.marked = false;
 
+   this.surrounding = new Array();
+
    this.$dom_field = function() {
        return $(document.getElementById(this.row + " " + this.column));
     }
@@ -123,121 +125,67 @@ var Field = function(row, column, mine) {
        if(this.mine) {
            this.$dom_field().addClass("mine");
            board.end();
-       } else {
-           this.$dom_field().addClass("safe");
-           this.$dom_field().text(this.mine_count() == 0? "" : this.mine_count());
+           return;
        }
+       this.$dom_field().addClass("safe");
+       this.$dom_field().text(this.mine_count() == 0? "" : this.mine_count());
+
        if(!this.mine && this.mine_count() == 0) {
-           if(this.top_right() && !this.top_right().revealed) {
-               this.top_right().reveal();
-           }
-           if(this.on_top() && !this.on_top().revealed) {
-               this.on_top().reveal();
-           }
-           if(this.top_left() && !this.top_left().revealed) {
-               this.top_left().reveal();
-           }
-           if(this.bottom() && !this.bottom().revealed) {
-               this.bottom().reveal();
-           }
-           if(this.bottom_right() && !this.bottom_right().revealed) {
-               this.bottom_right().reveal();
-           }
-           if(this.right() && !this.right().revealed) {
-               this.right().reveal();
-           }
-           if(this.bottom_left() && !this.bottom_left().revealed) {
-               this.bottom_left().reveal();
-           }
-           if(this.left() && !this.left().revealed) {
-               this.left().reveal();
+           for(var i = 0; i < this.surrounding().length; i++) {
+               this.surrounding()[i].reveal();
            }
        }
    }
-
+   
    this.mark = function() {
        this.marked = true;
    }
-   this.top_left = function() {
-       if(row == 0 || column == 0) {
-           return false;
-        }
-        return board.get_field(row -1 + " " + (column - 1));
-    }
 
-   this.on_top = function() {
-       if(row == 0) {
-            return false;
+   this.surrounding = function() {
+       var sur = new Array();
+       if( row > 0 ) {
+            //top
+            sur.push(board.get_field((row - 1) + " " + column));
+            // top left
+            if( column > 0) {
+                sur.push(board.get_field(row -1 + " " + (column - 1)));
+            }
+            // top right
+            if(column < board.columns - 1) {
+                sur.push(board.get_field(row - 1 + " " + (column + 1)));
+            }
        }
-       return board.get_field(row - 1 + " " + column);
+       if( row < board.rows - 1 ) {
+            // bottom
+            sur.push(board.get_field(row + 1 + " " + column));
+            // bottom left
+            if( column > 0 ) {
+                sur.push(board.get_field(row + 1 + " " + (column - 1)));
+            }
+            // bottom right
+            if( column < board.columns - 1) {
+                sur.push(board.get_field(row + 1 + " " + (column + 1)));
+            }
+       }
+       // left
+       if( column > 0 ) {
+           sur.push(board.get_field(row + " " + (column - 1)));
+       }
+       // right
+       if( column < board.columns - 1 ) {
+           sur.push(board.get_field(row + " " + (column + 1)));
+       }
+       return sur;
    }
 
-   this.top_right = function() {
-       if(row == 0 || column == board.columns - 1) {
-           return false;
-       }
-       return board.get_field(row - 1 + " " + (column + 1));
-   }
-   
-   this.bottom = function() {
-        if(row == board.rows - 1) {
-            return false;
-        }
-        return board.get_field(row + 1 + " " + column);
-   }   
-
-   this.bottom_left = function() {
-       if(row == board.rows || column == 0) {
-           return false;
-        }
-        return board.get_field(row + 1 + " " + (column - 1));
-   }
-   
-   this.bottom_right = function() {
-       if(row == board.rows || column == board.columns) {
-           return false;
-        }
-        return board.get_field(row + 1 + " " + (column + 1));
-    }
-   this.left = function() {
-       if(column == 0) {
-           return false;
-       }
-       return board.get_field(row + " " + (column - 1));
-   }
-    this.right = function() {
-       if(column == board.columns - 1) {
-           return false;
-       }
-           return board.get_field(row + " " + (column + 1));
-    }
-    this.mine_count = function() {
+   this.mine_count = function() {
        var count = 0;
-       if(this.on_top() && this.on_top().mine) {
-           count++;
-        }
-        if(this.top_left() && this.top_left().mine) {
-            count++;
-        }
-        if(this.top_right() && this.top_right().mine) {
-            count++;
-        }
-        if(this.bottom() && this.bottom().mine) {
-            count++;
-        }
-        if(this.bottom_left() && this.bottom_left().mine) {
-            count++;
-        }
-        if(this.bottom_right() && this.bottom_right().mine) {
-            count++;
-        }
-        if(this.right() && this.right().mine) {
-            count++;
-        }
-        if(this.left().mine) {
-            count++;
-        }
-        return count;
+       for(var i = 0; i < this.surrounding().length; i++) {
+           if(this.surrounding()[i].mine) {
+               count++;
+           }
+       }
+       return count;
     }
 }
 
