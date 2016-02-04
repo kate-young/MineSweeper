@@ -10,24 +10,28 @@ $(document).ready(function() {
     $(".btn").on("mousedown", function(e) {
         e.preventDefault();
         var field = board.get_field($(this).attr("id"));
-        if(field.revealed || board.complete) {
-            return;
-        }
-        if(e.which == 3) {
-            field.flag();
-            return;
-        }
-        field.reveal();
-        if(board.check_for_win()) {
-            alert("You Won!");
-        }
-        if(field.mine) {
-            setTimeout(function(){
-                alert("You lost!");
-            }, 200);
+        if(!field.revealed && !board.complete) {
+            if(e.which == 3) {
+                field.flag();
+                return;
+            }
+            if(!field.flagged) {
+                field.reveal();
+                if(board.check_for_win()) {
+                    setTimeout(function() {
+                        alert("You Won!");
+                    }, 200);
+                }
+                if(field.mine) {
+                    setTimeout(function(){
+                        alert("You lost!");
+                    }, 200);
+                }
+            }
         }
     });
 });
+
 var Board = function(rows, columns, mines) {
     this.complete = false;
 
@@ -102,9 +106,7 @@ var Field = function(row, column, mine) {
 
    this.revealed = false;
 
-   var flagged = false;
-
-   this.marked = false;
+   this.flagged = false;
 
    this.surrounding = new Array();
 
@@ -113,12 +115,17 @@ var Field = function(row, column, mine) {
     }
 
    this.flag = function() {
-       if(flagged) {
+       if(this.flagged) {
            $(this.$dom_field()).removeClass("flag");
+           this.flagged = false;
         } else {
            $(this.$dom_field()).addClass("flag");
-       }
-       flagged = true;
+           this.flagged = true;
+        }
+    }
+   
+   this.unflag = function() {
+
    }
 
    this.reveal = function() {
@@ -132,7 +139,9 @@ var Field = function(row, column, mine) {
            return;
        }
        this.$dom_field().addClass("safe");
-       this.$dom_field().text(this.mine_count() == 0? "" : this.mine_count());
+       var count = this.mine_count();
+       this.$dom_field().text(count == 0? "" : count);
+       this.$dom_field().addClass("safe_" + count);
 
        if(!this.mine && this.mine_count() == 0) {
            for(var i = 0; i < this.surrounding().length; i++) {
@@ -140,10 +149,6 @@ var Field = function(row, column, mine) {
                surround.reveal();
            }
        }
-   }
-   
-   this.mark = function() {
-       this.marked = true;
    }
 
    this.surrounding = function() {
