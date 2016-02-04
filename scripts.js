@@ -17,13 +17,14 @@ $(document).ready(function() {
             field.flag();
             return;
         }
-        
         field.reveal();
-        if(field.mine) {
-            alert("You lost!");
-        }
         if(board.check_for_win()) {
             alert("You Won!");
+        }
+        if(field.mine) {
+            setTimeout(function(){
+                alert("You lost!");
+            }, 200);
         }
     });
 });
@@ -113,9 +114,9 @@ var Field = function(row, column, mine) {
 
    this.flag = function() {
        if(flagged) {
-           $(this.$dom_field()).removeClass("glyphicon glyphicon-flag");
-       } else {
-           $(this.$dom_field()).addClass("glyphicon glyphicon-flag");
+           $(this.$dom_field()).removeClass("flag");
+        } else {
+           $(this.$dom_field()).addClass("flag");
        }
        flagged = true;
    }
@@ -136,7 +137,6 @@ var Field = function(row, column, mine) {
        if(!this.mine && this.mine_count() == 0) {
            for(var i = 0; i < this.surrounding().length; i++) {
                var surround = this.surrounding()[i];
-               console.log(surround);
                surround.reveal();
            }
        }

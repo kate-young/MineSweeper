@@ -9,14 +9,23 @@
     line-height: 0;
 }
 .mine {
-    background-color: #aa0000;
-    border-radius: 20px;
+    background-color: #fff;
+    background-image: url("images/bomb.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.flag {
+    background-image: url("images/flag.svg");
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .safe {
     border-color: #eee;
     background-color: #fff;
+    text-align: center;
+    padding: 3px;
 }
-.safe:hover, .safe:active, .safe:focus{
+.safe:hover, .safe:active, .safe:focus, .safe:visited, .mine:hover, .mine:active, .mine:focus, .mine:visited, .btn:active, .btn:focus, .btn:visited {
     background-color: #fff;
     border-color: #eee;
 }
