@@ -25,6 +25,24 @@
     text-align: center;
     padding: 3px;
 }
+.safe_1, .safe_1:hover {
+    color: #1BADEB;
+}
+.safe_2, .safe_2:hover {
+    color: #2B29FA;
+}
+.safe_3, .safe_3:hover {
+    color: #5C00E3;
+}
+.safe_4, .safe_4:hover {
+    color: #B118FA;
+}
+.safe_5, .safe_5:hover {
+    color: #6E0232;
+}
+.safe_6, .safe_6:hover {
+    color: #6E000B;
+}
 .safe:hover, .safe:active, .safe:focus, .safe:visited, .mine:hover, .mine:active, .mine:focus, .mine:visited, .btn:active, .btn:focus, .btn:visited {
     background-color: #fff;
     border-color: #eee;
