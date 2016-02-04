@@ -121,6 +121,9 @@ var Field = function(row, column, mine) {
    }
 
    this.reveal = function() {
+       if(this.revealed) {
+           return;
+       } 
        this.revealed = true;
        if(this.mine) {
            this.$dom_field().addClass("mine");
@@ -132,7 +135,9 @@ var Field = function(row, column, mine) {
 
        if(!this.mine && this.mine_count() == 0) {
            for(var i = 0; i < this.surrounding().length; i++) {
-               this.surrounding()[i].reveal();
+               var surround = this.surrounding()[i];
+               console.log(surround);
+               surround.reveal();
            }
        }
    }
