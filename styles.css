@@ -1,3 +1,6 @@
+h1 {
+    color: #aaa;
+}
 .btn {
     margin: 0px; 
     border-radius: 1px;
@@ -42,6 +45,12 @@
 }
 .safe_6, .safe_6:hover {
     color: #6E000B;
+}
+.safe_7, .safe_7:hover {
+    color: #871A00;
+}
+.safe_8, .safe_8:hover {
+    color: #F01C17;
 }
 .safe:hover, .safe:active, .safe:focus, .safe:visited, .mine:hover, .mine:active, .mine:focus, .mine:visited, .btn:active, .btn:focus, .btn:visited {
     background-color: #fff;
