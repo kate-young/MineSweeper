@@ -1,7 +1,7 @@
-h1 {
-    color: #aaa;
+body {
+    color: #999;
 }
-.btn {
+.field {
     margin: 0px; 
     border-radius: 1px;
     height:  30px;

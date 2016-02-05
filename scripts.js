@@ -1,13 +1,16 @@
 $(document).ready(function() {
     var rows = 20;
     var columns = 20;
-    var mines = 50;
+    var mines = 75;
+
     board = new Board(rows, columns, mines);
     board.initialize();
-    $(".btn").on("contextmenu", function() {
+    board.add_mines();
+
+    $(".field").on("contextmenu", function() {
         return false;
     });
-    $(".btn").on("mousedown", function(e) {
+    $(".field").on("mousedown", function(e) {
         e.preventDefault();
         var field = board.get_field($(this).attr("id"));
         if(!field.revealed && !board.complete) {
@@ -55,23 +58,34 @@ var Board = function(rows, columns, mines) {
     }
 
     this.initialize = function() {
-        var counter = 0;
         var $board = $("#main");
-        var mine_field = this.generate_mine_field();
 
         for(var r = 0; r < this.rows; r++) {
             var $row = $("<div class='row'></div>");
             for(var c = 0; c < this.columns; c++) {
                 var $button = $("<button class='btn btn-default field'> </button>");
-                var field = new Field(r, c, mine_field.indexOf(counter) > -1);
+                var field = new Field(r, c);
                 $button.attr("id", r + " " + c);
                 $button.appendTo($row);
                 this.fields.set(r + " " + c, field);
-                counter++;
             }
             $row.appendTo($board);
         }
         return $board;
+    }
+
+    this.add_mines = function() {
+        var mine_field = this.generate_mine_field();
+        var counter = 0;
+        for(var r = 0; r < this.rows; r++) {
+            for(var c = 0; c < this.columns; c++) {
+                if(mine_field.indexOf(counter) > -1) {
+                    this.get_field(r + " " + c).add_mine();
+                }
+                counter++;
+            }
+            
+        }
     }
 
     this.get_field = function(coords) {
@@ -97,12 +111,12 @@ var Board = function(rows, columns, mines) {
 }
 
 
-var Field = function(row, column, mine) {
+var Field = function(row, column) {
    this.row = row;
 
    this.column = column;
 
-   this.mine = mine;
+   this.mine = false;
 
    this.revealed = false;
 
@@ -124,8 +138,8 @@ var Field = function(row, column, mine) {
         }
     }
    
-   this.unflag = function() {
-
+   this.add_mine = function() {
+        this.mine = true;
    }
 
    this.reveal = function() {
