@@ -12,7 +12,10 @@ $(document).ready(function() {
     });
     $(".field").on("mousedown", function(e) {
         e.preventDefault();
-        var field = board.get_field($(this).attr("id"));
+        var id = $(this).attr("id");
+        var row = id.split(" ")[0];
+        var column = id.split(" ")[1];
+        var field = board.get_field(row, column);
         if(!field.revealed && !board.complete) {
             if(e.which == 3) {
                 field.flag();
@@ -80,7 +83,7 @@ var Board = function(rows, columns, mines) {
         for(var r = 0; r < this.rows; r++) {
             for(var c = 0; c < this.columns; c++) {
                 if(mine_field.indexOf(counter) > -1) {
-                    this.get_field(r + " " + c).add_mine();
+                    this.get_field(r, c).add_mine();
                 }
                 counter++;
             }
@@ -88,14 +91,15 @@ var Board = function(rows, columns, mines) {
         }
     }
 
-    this.get_field = function(coords) {
+    this.get_field = function(row, column) {
+        var coords = row + " " + column;
         return this.fields.get(coords);
     }
 
     this.check_for_win = function() {
         for(var r = 0; r< this.rows; r++) {
             for(var c= 0; c < this.columns; c++) {
-                var field = this.get_field(r + " " + c);
+                var field = this.get_field(r, c);
                 if(!field.mine && !field.revealed){
                     return false;
                 }
@@ -169,35 +173,35 @@ var Field = function(row, column) {
        var sur = new Array();
        if( row > 0 ) {
             //top
-            sur.push(board.get_field((row - 1) + " " + column));
+            sur.push(board.get_field(row - 1, column));
             // top left
             if( column > 0) {
-                sur.push(board.get_field(row -1 + " " + (column - 1)));
+                sur.push(board.get_field(row - 1, column - 1));
             }
             // top right
             if(column < board.columns - 1) {
-                sur.push(board.get_field(row - 1 + " " + (column + 1)));
+                sur.push(board.get_field(row - 1, column + 1));
             }
        }
        if( row < board.rows - 1 ) {
             // bottom
-            sur.push(board.get_field(row + 1 + " " + column));
+            sur.push(board.get_field(row + 1, column));
             // bottom left
             if( column > 0 ) {
-                sur.push(board.get_field(row + 1 + " " + (column - 1)));
+                sur.push(board.get_field(row + 1, column - 1));
             }
             // bottom right
             if( column < board.columns - 1) {
-                sur.push(board.get_field(row + 1 + " " + (column + 1)));
+                sur.push(board.get_field(row + 1, column + 1));
             }
        }
        // left
        if( column > 0 ) {
-           sur.push(board.get_field(row + " " + (column - 1)));
+           sur.push(board.get_field(row, column - 1));
        }
        // right
        if( column < board.columns - 1 ) {
-           sur.push(board.get_field(row + " " + (column + 1)));
+           sur.push(board.get_field(row, column + 1));
        }
        return sur;
    }
