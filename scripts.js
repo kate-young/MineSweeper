@@ -1,11 +1,10 @@
 $(document).ready(function() {
     var rows = 20;
     var columns = 20;
-    var mines = 75;
+    var mines = 300;
 
     board = new Board(rows, columns, mines);
     board.initialize();
-    board.add_mines();
 
     $(".field").on("contextmenu", function() {
         return false;
@@ -22,6 +21,9 @@ $(document).ready(function() {
                 return;
             }
             if(!field.flagged) {
+                if(!board.mines_added) {
+                  board.add_mines(parseInt(row), parseInt(column));
+                }
                 field.reveal();
                 if(board.check_for_win()) {
                     setTimeout(function() {
@@ -49,14 +51,21 @@ var Board = function(rows, columns, mines) {
 
     this.fields = new Map();
 
-    this.generate_mine_field = function() {
+    this.mines_added = false;
+
+    this.generate_mine_field = function(row, column) {
+        // get count of initial row/column
+        var initial_position = row * (this.columns) + column;
+        console.log(initial_position);
         var rands = new Array();
         while(rands.length < this.mines) {
             var num = Math.floor(Math.random() * this.rows * this.columns);
-            if(rands.indexOf(num) === -1) {
+            // add to random array if it is not already there and it does not match the initial position
+            if(rands.indexOf(num) === -1 && num != initial_position) {
                 rands.push(num);
             }
         }
+        this.mines_added = true;
         return rands;
     }
 
@@ -77,8 +86,8 @@ var Board = function(rows, columns, mines) {
         return $board;
     }
 
-    this.add_mines = function() {
-        var mine_field = this.generate_mine_field();
+    this.add_mines = function(row, column) {
+        var mine_field = this.generate_mine_field(row, column);
         var counter = 0;
         for(var r = 0; r < this.rows; r++) {
             for(var c = 0; c < this.columns; c++) {
