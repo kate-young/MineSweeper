@@ -1,7 +1,7 @@
 $(document).ready(function() {
-    var rows = 20;
-    var columns = 20;
-    var mines = 300;
+    var rows = 15;
+    var columns = 15;
+    var mines = 40;
 
     board = new Board(rows, columns, mines);
     board.initialize();
@@ -11,9 +11,8 @@ $(document).ready(function() {
     });
     $(".field").on("mousedown", function(e) {
         e.preventDefault();
-        var id = $(this).attr("id");
-        var row = id.split(" ")[0];
-        var column = id.split(" ")[1];
+        var column = $(this).prevAll().length;
+        var row  = $(this).parent().prevAll().length;
         var field = board.get_field(row, column);
         if(!field.revealed && !board.complete) {
             if(e.which == 3) {
@@ -76,10 +75,8 @@ var Board = function(rows, columns, mines) {
             var $row = $("<div class='row'></div>");
             for(var c = 0; c < this.columns; c++) {
                 var $button = $("<button class='btn btn-default field'> </button>");
-                var field = new Field(r, c);
-                $button.attr("id", r + " " + c);
                 $button.appendTo($row);
-                this.fields.set(r + " " + c, field);
+                this.fields[r, c] = new Field(r, c);
             }
             $row.appendTo($board);
         }
@@ -101,8 +98,7 @@ var Board = function(rows, columns, mines) {
     }
 
     this.get_field = function(row, column) {
-        var coords = row + " " + column;
-        return this.fields.get(coords);
+        return this.fields[[row, column]];
     }
 
     this.check_for_win = function() {
@@ -138,7 +134,8 @@ var Field = function(row, column) {
    this.surrounding = new Array();
 
    this.$dom_field = function() {
-       return $(document.getElementById(this.row + " " + this.column));
+       var $row = $($(".row")[row]);
+       return $($row.children()[column]);
     }
 
    this.flag = function() {
