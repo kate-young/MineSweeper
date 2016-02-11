@@ -55,7 +55,6 @@ var Board = function(rows, columns, mines) {
     this.generate_mine_field = function(row, column) {
         // get count of initial row/column
         var initial_position = row * (this.columns) + column;
-        console.log(initial_position);
         var rands = new Array();
         while(rands.length < this.mines) {
             var num = Math.floor(Math.random() * this.rows * this.columns);
@@ -76,7 +75,7 @@ var Board = function(rows, columns, mines) {
             for(var c = 0; c < this.columns; c++) {
                 var $button = $("<button class='btn btn-default field'> </button>");
                 $button.appendTo($row);
-                this.fields[r, c] = new Field(r, c);
+                this.fields[[r, c]] = new Field(r, c);
             }
             $row.appendTo($board);
         }
