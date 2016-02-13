@@ -6,6 +6,9 @@ $(document).ready(function() {
     board = new Board(rows, columns, mines);
     board.initialize();
 
+    $("#restart").on("click", function() {
+        location.reload();
+    });
     $(".field").on("contextmenu", function() {
         return false;
     });
