@@ -34,7 +34,7 @@ $(document).ready(function() {
                 }
                 if(field.mine) {
                     setTimeout(function(){
-                        alert("You lost!");
+                        $("#lostModal").focus()
                     }, 200);
                 }
             }
